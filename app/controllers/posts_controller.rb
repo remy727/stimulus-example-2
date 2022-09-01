@@ -25,10 +25,12 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
+        format.turbo_stream
+        format.html { redirect_to posts_path }
         format.json { render :show, status: :created, location: @post }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream
+        format.html { render posts_path, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
@@ -38,10 +40,12 @@ class PostsController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
-        format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
+        format.turbo_stream
+        format.html { redirect_to posts_path, notice: "Post was successfully updated." }
         format.json { render :show, status: :ok, location: @post }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream
+        format.html { render posts_path, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
@@ -52,8 +56,15 @@ class PostsController < ApplicationController
     @post.destroy
 
     respond_to do |format|
+      format.turbo_stream
       format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def clear_message
+    respond_to do |format|
+      format.turbo_stream
     end
   end
 
